@@ -1,12 +1,15 @@
+# base image
+FROM node:9.6.1
 
+# Prepare app directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app/
 
-FROM mhart/alpine-node
-WORKDIR /app
-COPY . .
-RUN npm run build --production
+# Install dependencies
+COPY package.json /usr/src/app/
+RUN npm install --silent
 
-FROM mhart/alpine-node
-RUN npm install -g serve
-WORKDIR /app
-COPY --from=0 /app/build .
-CMD [“serve”, “-p 80”, “-s”, “.”]
+ADD . /usr/src/app/
+
+EXPOSE 3000
+CMD [ "npm", "start" ]
